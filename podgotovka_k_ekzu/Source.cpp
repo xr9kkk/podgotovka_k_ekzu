@@ -6,7 +6,7 @@
 #include <vector>
 
 //ким є4----------------------------------------------------------------------------------
-//рекурсивное удаление €русов
+//recursion delete yarus
 bool recursion_delete_yarus(btree::ptrNODE& root, int level)
 {
 	if (!root)
@@ -31,7 +31,7 @@ bool recursion_delete_yarus(btree::BTREE& tree, int level)
 	return recursion_delete_yarus(tree.get_root(), level);
 }
 
-//нерекурсивна€ функци€ поиска суммы элементов от корн€ до заданного уровн€
+//non-recursive search function for the sum of elements from the root to a given level
 int find_sum(btree::ptrNODE& root, int level)
 {
 	if (!root|| level<1)
@@ -60,7 +60,7 @@ int find_sum(btree::ptrNODE& root, int level)
 	return sum;
 }
 
-//“реть€ задача: дублирование последней буквы каждого слова
+//The third task: duplicating the last letter of each word
 ttree::ptrNODE double_last_sym(ttree::ptrNODE root, std::vector<char>& word) {
 	if (!root)
 		return nullptr;
@@ -103,19 +103,19 @@ int main()
 	btree.print();
 	
 
-	std::cout << "ѕерва€ задача: рекурсивное удаление €русов \n";
+	std::cout << "The first task: recursive removal of tiers. \n";
 	int level = 3;
 	if (recursion_delete_yarus(btree, level)) {
 		std::cout << "Level " << level << " deleted\n";
 		btree.print();
 	}
 	 
-	std::cout << "¬тора€ задача: поиск суммы до заданного уровн€\n";
+	std::cout << "The second task is to find the amount up to a given level.\n";
 	int new_level = 3;
 	int sum = find_sum(btree.get_root(), new_level);
 	std::cout << sum << std::endl;
 
-	std::cout << "“реть€ задача: дублирование последней буквы каждого слова\n";
+	std::cout << "The third task: duplicating the last letter of each word. \n";
 	std::vector<char> word;
 	ttree::ptrNODE new_root = double_last_sym(ttree.get_root(), word);
 	ttree::printW(new_root, "");
