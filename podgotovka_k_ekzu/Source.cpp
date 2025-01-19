@@ -3,6 +3,7 @@
 #include "trie_tree.h"
 #include "binary_tree.h"
 #include <queue>
+#include <vector>
 
 //ким №4----------------------------------------------------------------------------------
 //рекурсивное удаление ярусов
@@ -60,34 +61,35 @@ int find_sum(btree::ptrNODE& root, int level)
 }
 
 //Третья задача: дублирование последней буквы каждого слова
-void double_last_sym(ttree::ptrNODE& root, std::string& word)
-{
+ttree::ptrNODE double_last_sym(ttree::ptrNODE root, std::vector<char>& word) {
 	if (!root)
-		return;
+		return nullptr;
 
-	if (root->eow) //почему то здесь при первой итерации root->eow сразу false, что не так, надо разобраться с этим, хотя просто в мейне при создании дерево он сразу ставится в true
-	{
-		char last_char = word.back(); 
+	ttree::ptrNODE new_node = new ttree::NODE();
+	new_node->eow = root->eow;
+
+	if (root->eow && !word.empty()) {
+		char last_char = word.back();
 		int index = last_char - 'a';
 
-		if (!root->ptrs[index])
-		{
-			root->ptrs[index] = new ttree::NODE();
+		if (!new_node->ptrs[index]) {
+			new_node->ptrs[index] = new ttree::NODE();
+			new_node->ptrs[index]->eow = true;
 		}
-
-		root->ptrs[index]->eow = true;
 	}
 
-	for (int i = 0; i < 26; ++i)
-	{
-		if (root->ptrs[i])
-		{
+	for (int i = 0; i < 26; ++i) {
+		if (root->ptrs[i]) {
 			word.push_back('a' + i);
-			double_last_sym(root->ptrs[i], word);
-			word.pop_back(); 
+			new_node->ptrs[i] = double_last_sym(root->ptrs[i], word);
+			word.pop_back();
 		}
 	}
+
+	return new_node;
 }
+
+
 
 
 int main()
@@ -96,29 +98,28 @@ int main()
 	ttree::TTREE ttree("trie.txt");
 	ttree.print("");
 	bool flag = ttree.get_root()->eow;
-
 	std::cout << std::endl;
 	btree::BTREE btree("binary.txt");
 	btree.print();
 	
 
 	std::cout << "Первая задача: рекурсивное удаление ярусов \n";
-	//int level = 3;
-	//if (recursion_delete_yarus(btree, level)) {
-	//	std::cout << "Level " << level << " deleted\n";
-	//	btree.print();
-	//}
-	// 
-	std::cout << "Вторая задача: поиск суммы до заданного уровня\n";
 	int level = 3;
-	int sum = find_sum(btree.get_root(), level);
+	if (recursion_delete_yarus(btree, level)) {
+		std::cout << "Level " << level << " deleted\n";
+		btree.print();
+	}
+	 
+	std::cout << "Вторая задача: поиск суммы до заданного уровня\n";
+	int new_level = 3;
+	int sum = find_sum(btree.get_root(), new_level);
 	std::cout << sum << std::endl;
 
 	std::cout << "Третья задача: дублирование последней буквы каждого слова\n";
-	std::string word = "";
-	ttree::ptrNODE root = ttree.get_root();
-	double_last_sym(root, word);
-	ttree.print("");
+	std::vector<char> word;
+	ttree::ptrNODE new_root = double_last_sym(ttree.get_root(), word);
+	ttree::printW(new_root, "");
+	
 
 	return 0;
 }
