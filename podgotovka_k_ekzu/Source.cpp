@@ -4,10 +4,11 @@
 #include "binary_tree.h"
 #include <queue>
 #include <vector>
+#include <stack>
 
-//ким №4----------------------------------------------------------------------------------
+//kim №4----------------------------------------------------------------------------------
 //recursion delete yarus
-bool recursion_delete_yarus(btree::ptrNODE& root, int level)
+bool recursion_delete_tiers(btree::ptrNODE& root, int level)
 {
 	if (!root)
 		return false;
@@ -17,18 +18,18 @@ bool recursion_delete_yarus(btree::ptrNODE& root, int level)
 		root = nullptr; 
 		return true;
 	}
-	bool left_deleted = recursion_delete_yarus(root->left, level - 1);
-	bool right_deleted = recursion_delete_yarus(root->right, level - 1);
+	bool left_deleted = recursion_delete_tiers(root->left, level - 1);
+	bool right_deleted = recursion_delete_tiers(root->right, level - 1);
 	return left_deleted || right_deleted;
 }
 
-bool recursion_delete_yarus(btree::BTREE& tree, int level)
+bool recursion_delete_tiers(btree::BTREE& tree, int level)
 {
 	if (tree.empty())
 	{
 		return false;
 	} 
-	return recursion_delete_yarus(tree.get_root(), level);
+	return recursion_delete_tiers(tree.get_root(), level);
 }
 
 //non-recursive search function for the sum of elements from the root to a given level
@@ -90,6 +91,87 @@ ttree::ptrNODE double_last_sym(ttree::ptrNODE root, std::vector<char>& word) {
 }
 
 
+//kim №3----------------------------------------------------------------------------------
+//recursive add new yarus
+bool recursion_add_tiers(btree::ptrNODE& root)
+{
+	if (!root)
+		return false;
+
+	bool added{};
+
+	if (!root->left )
+	{
+		root->left = new btree::NODE(0);
+		added = true;
+	}
+
+	if (!root->right)
+	{
+		root->right = new btree::NODE(0);
+		added = true;
+	}
+	
+	if (added)
+		return true;
+
+	bool left_added = recursion_add_tiers(root->left);
+	bool right_added = recursion_add_tiers(root->right);
+	return added|| left_added || right_added;
+}
+
+//non-recursive find sum from 0 element to first odd inclusive
+int find_sum_to_odd(btree::ptrNODE& root)
+{
+	if (!root)
+		return 0;
+	std::queue<btree::ptrNODE> q;
+	q.push(root);
+
+	int sum{};
+	while (!q.empty())
+	{
+		auto current = q.front();
+		q.pop();
+		sum += current->info;
+		if (current->info % 2 == 0)
+		{
+			sum += current->info;
+			break;
+		}
+		if (current->left)
+			q.push(current->left);
+		if (current->right)
+			q.push(current->right);
+	}
+	return sum;
+}
+
+//delete last char
+ttree::ptrNODE remove_last_char(ttree::ptrNODE root, std::string& word) {
+	if (!root) {
+		return nullptr;
+	}
+
+	if (root->eow && word.empty()) {
+		char last_char = word.back();
+		int index = last_char - 'a';
+		if (root->ptrs[index]) {
+			delete root->ptrs[index];
+			root->ptrs[index] = nullptr;
+		}
+	}
+
+
+	for (int i = 0; i < 26; ++i) {
+		if (root->ptrs[i] && !word.empty()) {
+			root->ptrs[i] = remove_last_char(root->ptrs[i], word);
+			word.pop_back();
+		}
+	}
+
+	return root;
+}
 
 
 int main()
@@ -102,10 +184,10 @@ int main()
 	btree::BTREE btree("binary.txt");
 	btree.print();
 	
-
+	/*std::cout << "KIM №4\n";
 	std::cout << "The first task: recursive removal of tiers. \n";
 	int level = 3;
-	if (recursion_delete_yarus(btree, level)) {
+	if (recursion_delete_tiers(btree, level)) {
 		std::cout << "Level " << level << " deleted\n";
 		btree.print();
 	}
@@ -118,8 +200,17 @@ int main()
 	std::cout << "The third task: duplicating the last letter of each word. \n";
 	std::vector<char> word;
 	ttree::ptrNODE new_root = double_last_sym(ttree.get_root(), word);
-	ttree::printW(new_root, "");
-	
+	ttree::printW(new_root, "");*/
 
+	std::cout << "KIM №3\n";
+	std::cout << "The first task: recursive add new 0 leafs\n";
+	if (recursion_add_tiers(btree.get_root()))
+		btree.print();
+	int sum_odd = find_sum_to_odd(btree.get_root());
+	std::cout << "The second task: sum before odd element " << sum_odd << std::endl;
+	std::cout << "Third task: delete last sym in word\n";
+	std::string word = "";
+	ttree::ptrNODE new_root  = remove_last_char(ttree.get_root(), word);
+	ttree::printW(new_root, "");
 	return 0;
 }

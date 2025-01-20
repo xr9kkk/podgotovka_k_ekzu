@@ -42,7 +42,7 @@ bool is_all_prts_empty(ttree::ptrNODE t)
 	return result;
 }
 
-bool ttree::TTREE::all_prts_empty(ptrNODE t)
+bool ttree::TTREE::all_ptrs_empty(ptrNODE t)
 {
 	return is_all_prts_empty(t);
 }

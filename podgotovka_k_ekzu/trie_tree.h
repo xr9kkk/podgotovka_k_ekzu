@@ -28,7 +28,7 @@ namespace ttree
 		TTREE() { root = nullptr; }
 		TTREE(const char* file_name);
 		bool empty();
-		bool all_prts_empty(ptrNODE t);
+		bool all_ptrs_empty(ptrNODE t);
 		ptrNODE get_root()
 		{
 			return root;
