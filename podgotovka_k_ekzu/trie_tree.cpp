@@ -26,28 +26,6 @@ ttree::TTREE::TTREE(const char* file_name)
 	}
 }
 
-void ttree::TTREE::add(ttree::ptrNODE& t, const std::string word, short i)
-{
-	if (!t)
-	{
-		t = new ttree::NODE();
-	}
-	if (short(word.length()) - 1 < i)
-		t->eow = true;
-	else
-		add(t->ptrs[word[i] - 'a'], word, i + 1);
-}
-
-ttree::TTREE ttree::TTREE::remove_root()
-{
-
-	if (root) {
-		delete root;
-		root = nullptr;
-	}
-	return *this;
-}
-
 bool ttree::TTREE::empty()
 {
 	return !root;
