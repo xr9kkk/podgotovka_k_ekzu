@@ -148,7 +148,7 @@ int find_sum_to_odd(btree::ptrNODE& root)
 bool ptrs_node_empty(ttree::ptrNODE r) {
 	for (size_t i{}; i < 26UL; ++i)
 		if (r->ptrs[i])
-			return false;;
+			return false;
 	return true;
 }
 
@@ -172,8 +172,19 @@ void remove_last_ch(ttree::ptrNODE& r) {
 	}
 }
 
-
-
+//friend std::ostream& operator<<(std::ostream& os, Person& person);
+//};
+//
+//std::ostream& operator<<(std::ostream& os, Person& person)
+//{
+//	os << person.first_pole << person.second_pole<<std::endl;
+//	return os;
+//}
+//Перегружаем прямо в классе оператор типа == и тд
+//bool operator==(Person& other) const
+//{
+//	return name == other.name && age==other.age;
+//}
 
 int main()
 {
