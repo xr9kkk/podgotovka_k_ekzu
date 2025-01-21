@@ -27,6 +27,8 @@ namespace ttree
 	public:
 		TTREE() { root = nullptr; }
 		TTREE(const char* file_name);
+		void add(ttree::ptrNODE& t, const std::string word, short i);
+		TTREE remove_root();
 		bool empty();
 		bool all_ptrs_empty(ptrNODE t);
 		ptrNODE get_root()

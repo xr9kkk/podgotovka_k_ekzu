@@ -14,8 +14,8 @@ bool recursion_delete_tiers(btree::ptrNODE& root, int level)
 		return false;
 	if (level == 1)
 	{
-		delete root; 
-		root = nullptr; 
+		delete root;
+		root = nullptr;
 		return true;
 	}
 	bool left_deleted = recursion_delete_tiers(root->left, level - 1);
@@ -28,20 +28,20 @@ bool recursion_delete_tiers(btree::BTREE& tree, int level)
 	if (tree.empty())
 	{
 		return false;
-	} 
+	}
 	return recursion_delete_tiers(tree.get_root(), level);
 }
 
 //non-recursive search function for the sum of elements from the root to a given level
 int find_sum(btree::ptrNODE& root, int level)
 {
-	if (!root|| level<1)
+	if (!root || level < 1)
 		return 0;
-	
+
 	std::queue<std::pair<btree::ptrNODE, int>> q;
 	q.push({ root, 1 });
 	int sum{};
-	
+
 
 	while (!q.empty())
 	{
@@ -100,7 +100,7 @@ bool recursion_add_tiers(btree::ptrNODE& root)
 
 	bool added{};
 
-	if (!root->left )
+	if (!root->left)
 	{
 		root->left = new btree::NODE(0);
 		added = true;
@@ -111,13 +111,13 @@ bool recursion_add_tiers(btree::ptrNODE& root)
 		root->right = new btree::NODE(0);
 		added = true;
 	}
-	
+
 	if (added)
 		return true;
 
 	bool left_added = recursion_add_tiers(root->left);
 	bool right_added = recursion_add_tiers(root->right);
-	return added|| left_added || right_added;
+	return added || left_added || right_added;
 }
 
 //non-recursive find sum from 0 element to first odd inclusive
@@ -125,65 +125,65 @@ int find_sum_to_odd(btree::ptrNODE& root)
 {
 	if (!root)
 		return 0;
-	std::queue<btree::ptrNODE> q;
-	q.push(root);
+	std::stack<btree::ptrNODE> s;
+	if (root->info % 2 == 1)
+		s.push(root);
 
 	int sum{};
-	while (!q.empty())
+	while (!s.empty())
 	{
-		auto current = q.front();
-		q.pop();
+		auto current = s.top();
+		s.pop();
 		sum += current->info;
-		if (current->info % 2 == 0)
-		{
-			sum += current->info;
-			break;
-		}
-		if (current->left)
-			q.push(current->left);
-		if (current->right)
-			q.push(current->right);
+		if (current->right != nullptr && current->right->info % 2 == 1)
+			s.push(current->right);
+		if (current->left != nullptr && current->left->info % 2 == 1)
+			s.push(current->left);
 	}
 	return sum;
 }
 
+
 //delete last char
-ttree::ptrNODE remove_last_char(ttree::ptrNODE root, std::string& word) {
-	if (!root) {
-		return nullptr;
+ttree::TTREE& remove(ttree::TTREE& tree, const std::string& word, int level) {
+	if (!tree.get_root())
+		return tree;
+
+	ttree::ptrNODE root = tree.get_root();
+
+	if (level == word.length()) {
+		if (root->eow)
+			root->eow = false;
 	}
-
-	if (root->eow && word.empty()) {
-		char last_char = word.back();
-		int index = last_char - 'a';
-		if (root->ptrs[index]) {
-			delete root->ptrs[index];
-			root->ptrs[index] = nullptr;
-		}
+	else {
+		int index = word[level] - 'a';
+		root->ptrs[index] = remove(tree, word, level + 1);
 	}
-
-
-	for (int i = 0; i < 26; ++i) {
-		if (root->ptrs[i] && !word.empty()) {
-			root->ptrs[i] = remove_last_char(root->ptrs[i], word);
-			word.pop_back();
-		}
-	}
-
-	return root;
 }
+
+
+//static TrieNode remove(TrieNode root, String key, int depth) {
+//	if (root == null) return null;
+//	if (depth == key.length()) {
+//		if (root.isEndOfWord) root.isEndOfWord = false;
+//	}
+//	int index = key.charAt(depth) - 'a';
+//	root.children[index] = remove(root.children[index], key, depth + 1);
+//}
+
+
+
+
 
 
 int main()
 {
 	setlocale(LC_ALL, "ru");
-	ttree::TTREE ttree("trie.txt");
-	ttree.print("");
-	bool flag = ttree.get_root()->eow;
-	std::cout << std::endl;
+	/*ttree::TTREE ttree("trie.txt");
+	ttree.print("");*/
 	btree::BTREE btree("binary.txt");
 	btree.print();
-	
+
 	/*std::cout << "KIM ¹4\n";
 	std::cout << "The first task: recursive removal of tiers. \n";
 	int level = 3;
@@ -191,7 +191,7 @@ int main()
 		std::cout << "Level " << level << " deleted\n";
 		btree.print();
 	}
-	 
+
 	std::cout << "The second task is to find the amount up to a given level.\n";
 	int new_level = 3;
 	int sum = find_sum(btree.get_root(), new_level);
@@ -209,8 +209,9 @@ int main()
 	int sum_odd = find_sum_to_odd(btree.get_root());
 	std::cout << "The second task: sum before odd element " << sum_odd << std::endl;
 	std::cout << "Third task: delete last sym in word\n";
-	std::string word = "";
-	ttree::ptrNODE new_root  = remove_last_char(ttree.get_root(), word);
-	ttree::printW(new_root, "");
+	ttree::TTREE ttree("trie.txt");
+	remove(ttree, "", 0);
+	ttree.print("");
 	return 0;
 }
+

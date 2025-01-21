@@ -1,6 +1,6 @@
 #include "Trie_Tree.h"
 
-void add(ttree::ptrNODE &t, const std::string word, short i)
+void add(ttree::ptrNODE& t, const std::string word, short i)
 {
 	if (!t)
 	{
@@ -12,7 +12,8 @@ void add(ttree::ptrNODE &t, const std::string word, short i)
 		add(t->ptrs[word[i] - 'a'], word, i + 1);
 }
 
-ttree::TTREE::TTREE(const char * file_name)
+
+ttree::TTREE::TTREE(const char* file_name)
 {
 	root = nullptr;
 	std::ifstream file(file_name);
@@ -25,12 +26,34 @@ ttree::TTREE::TTREE(const char * file_name)
 	}
 }
 
+void ttree::TTREE::add(ttree::ptrNODE& t, const std::string word, short i)
+{
+	if (!t)
+	{
+		t = new ttree::NODE();
+	}
+	if (short(word.length()) - 1 < i)
+		t->eow = true;
+	else
+		add(t->ptrs[word[i] - 'a'], word, i + 1);
+}
+
+ttree::TTREE ttree::TTREE::remove_root()
+{
+
+	if (root) {
+		delete root;
+		root = nullptr;
+	}
+	return *this;
+}
+
 bool ttree::TTREE::empty()
 {
 	return !root;
 }
 
-bool is_all_prts_empty(ttree::ptrNODE t)
+bool is_all_ptrs_empty(ttree::ptrNODE t)
 {
 	bool result = true;
 	int i = 0;
@@ -44,10 +67,10 @@ bool is_all_prts_empty(ttree::ptrNODE t)
 
 bool ttree::TTREE::all_ptrs_empty(ptrNODE t)
 {
-	return is_all_prts_empty(t);
+	return is_all_ptrs_empty(t);
 }
 
-void clear(ttree::ptrNODE &t)
+void clear(ttree::ptrNODE& t)
 {
 	for (int i = 0; i < 26; i++)
 		if (t->ptrs[i])
@@ -72,14 +95,14 @@ void print_words(ttree::ptrNODE t, std::string word)
 
 void print_vines(ttree::ptrNODE t, std::string word)
 {
-	if (is_all_prts_empty(t))
+	if (is_all_ptrs_empty(t))
 		std::cout << word << std::endl;
 	for (int i = 0; i < 26; i++)
 		if (t->ptrs[i])
 			print_vines(t->ptrs[i], word + char(i + 'a'));
 }
 
-void ttree::TTREE::print(bool words, std::ostream & stream)
+void ttree::TTREE::print(bool words, std::ostream& stream)
 {
 	if (words)
 		print_words(root, "");
@@ -89,9 +112,9 @@ void ttree::TTREE::print(bool words, std::ostream & stream)
 
 void ttree::printW(ttree::ptrNODE t, std::string word)
 {
-		if (t->eow)
-			std::cout << word << std::endl;
-		for (int i = 0; i < 26; i++)
-			if (t->ptrs[i])
-				printW(t->ptrs[i], word + char(i + 'a'));
+	if (t->eow)
+		std::cout << word << std::endl;
+	for (int i = 0; i < 26; i++)
+		if (t->ptrs[i])
+			printW(t->ptrs[i], word + char(i + 'a'));
 }
